@@ -2,5 +2,5 @@ all:
 	cc main.c db.c -lsqlite3 -ledit -lcurses -o safestore
 	strip safestore
 debug:
-	cc main.c -ledit -lcurses -o safestore -g
+	cc main.c db.c -lsqlite3 -ledit -lcurses -o safestore -g
 
