@@ -14,8 +14,8 @@ int newdb(const char *name)
 	size_t len;
 	DIR *dirp;
 	char *sql = "CREATE TABLE PW(" \ 
-		    "NAME   TEXT  NOT NULL," \
-		    "KEY    TEXT  NOT NULL);";
+		"NAME        TEXT," \
+         	"KEY         TEXT);";
 	struct dirent *dirent;
 
 	/* checks if db already exists */
@@ -40,12 +40,13 @@ int newdb(const char *name)
 		err(1, "db.c: newdb");
 	else
 		puts("New db created.");
-	
+	/* init database */
 	rc = sqlite3_exec(db, sql, NULL, 0, &errmsg);
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "SQL Error db.c : %s", errmsg);
 		sqlite3_free(errmsg);
 	}
+	
 	sqlite3_close(db);
 
 	return 0;

@@ -1,6 +1,6 @@
 #ifndef DB_H_
-#define DB_H_H
+#define DB_H_
 
-int newdb(const char *name);
+int newdb(const char *);
 
 #endif
