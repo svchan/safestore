@@ -48,7 +48,8 @@ char **getargs(char *buf)
 		}
 		p++;
 	}
-
+	*p = '\0';
+	
 	args = malloc(sizeof(char *) * spaces);
 	if (args == NULL)
 		err(1, "main.c: getarg malloc");
