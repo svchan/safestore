@@ -5,7 +5,7 @@
 #include <err.h>
 #include "db.h"
 
-int getargs(char *, char **);
+char **getargs(char *);
 char *prompt(EditLine *);
 
 int main(int argc, char *argv[])
@@ -22,23 +22,23 @@ int main(int argc, char *argv[])
 		line[c - 1] = '\0';
 
 		if (strncmp("args", line, 4) == 0) {
-			getargs(line, args);
-			puts(bargs[0]);
+			args = getargs(line);
+			puts(args[1]);
 		}
 		if (strncmp("exit", line, 4) == 0)
 			break;
 		else if (strncmp("new", line, 3) == 0) 
 			newdb(line + 4);
 	}
-	
+	free(args);
 	free(line);
 	return 0;
 }
 
-int getargs(char *buf, char **args)
+char **getargs(char *buf)
 {
 	int spaces = 1, i;
-	char *p, *tmp;
+	char *p, *tmp, **args;
 
 	p = buf; 
 	while (*p) {
@@ -59,11 +59,13 @@ int getargs(char *buf, char **args)
 		if (tmp == NULL)
 			err(1, "main.c: getarg malloc");
 		memcpy(tmp, p, (strlen(p) + 1));
-		args[0] = tmp;
+		args[i] = tmp;
+		p = strchr(p, '\0');
+		p++;
 	}
 	printf("%d\n", spaces);
 
-	return 0;
+	return args;
 }
 
 char *prompt(EditLine *el)
