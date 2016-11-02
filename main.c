@@ -21,14 +21,14 @@ int main(int argc, char *argv[])
 		line = el_gets(el, &c);
 		line[c - 1] = '\0';
 
-		if (strncmp("args", line, 4) == 0) {
-			args = getargs(line);
-			puts(args[1]);
-		}
 		if (strncmp("exit", line, 4) == 0)
 			break;
-		else if (strncmp("new", line, 3) == 0) 
-			newdb(line + 4);
+		else if (strncmp("new", line, 3) == 0) {
+			args = getargs(line);
+			if (args[1] != NULL)
+				newdb(args[1]);
+		}
+
 	}
 	free(args);
 	free(line);
