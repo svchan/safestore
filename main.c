@@ -22,14 +22,15 @@ int main(int argc, char *argv[])
 		line[c - 1] = '\0';
 
 		if (strncmp("args", line, 4) == 0) {
-			getargs(line, NULL);
+			getargs(line, args);
+			puts(bargs[0]);
 		}
 		if (strncmp("exit", line, 4) == 0)
 			break;
 		else if (strncmp("new", line, 3) == 0) 
 			newdb(line + 4);
 	}
-
+	
 	free(line);
 	return 0;
 }
@@ -41,8 +42,10 @@ int getargs(char *buf, char **args)
 
 	p = buf; 
 	while (*p) {
-		if ((*p == ' '))
+		if ((*p == ' ')) {
+			*p = '\0';
 			spaces++;
+		}
 		p++;
 	}
 
@@ -50,8 +53,13 @@ int getargs(char *buf, char **args)
 	if (args == NULL)
 		err(1, "main.c: getarg malloc");
 	
+	p = buf;
 	for (i = 0; i < spaces; i++) {
-		
+		tmp = malloc(strlen(p) + 1);
+		if (tmp == NULL)
+			err(1, "main.c: getarg malloc");
+		memcpy(tmp, p, (strlen(p) + 1));
+		args[0] = tmp;
 	}
 	printf("%d\n", spaces);
 
