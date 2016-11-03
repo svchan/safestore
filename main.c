@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <histedit.h>
 #include <string.h>
+#include <sqlite3.h>
 #include <err.h>
 #include "db.h"
 
@@ -11,6 +12,7 @@ char *prompt(EditLine *);
 int main(int argc, char *argv[])
 {
 	char *line, **args;
+	sqlite3 *db;
 	EditLine *el;
 	int c;
 
@@ -27,9 +29,15 @@ int main(int argc, char *argv[])
 			args = getargs(line);
 			if (args[1] != NULL)
 				newdb(args[1]);
+		} else if(strncmp("open", line, 4) == 0 ) {
+			args = getargs(line);
+			if (args[1] != NULL)
+				db = opendb(args[1]);
 		}
 
+
 	}
+	
 	free(args);
 	free(line);
 	return 0;
@@ -48,7 +56,6 @@ char **getargs(char *buf)
 		}
 		p++;
 	}
-	*p = '\0';
 	
 	args = malloc(sizeof(char *) * spaces);
 	if (args == NULL)
@@ -64,7 +71,6 @@ char **getargs(char *buf)
 		p = strchr(p, '\0');
 		p++;
 	}
-	printf("%d\n", spaces);
 
 	return args;
 }

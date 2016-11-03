@@ -12,28 +12,14 @@ int newdb(const char *name)
 	sqlite3 *db;
 	int rc;
 	size_t len;
-	DIR *dirp;
 	char *sql = "CREATE TABLE PW(" \ 
 		"NAME        TEXT," \
          	"KEY         TEXT);";
-	struct dirent *dirent;
 
-	/* checks if db already exists */
-	len = strlen(name);
-	dirp = opendir("/home/sv/devel/safestore/");
-	if (dirp != NULL) {
-		while ((dirent = readdir(dirp)) != NULL)
-			if (dirent->d_namlen == len &&
-			      strcmp(dirent->d_name, name) == 0) {
-				puts("Database already exists");
-				closedir(dirp);
-				return 1;
-			}
-		closedir(dirp);
-	} else
-		err(1, "db.c: newdb");
-
-	
+	if (checkdir(name) == 1) {
+		puts("Database already exists");
+		return 1;
+	}
 	
 	rc = sqlite3_open(name, &db);
 	if (rc != 0)
@@ -50,4 +36,43 @@ int newdb(const char *name)
 	sqlite3_close(db);
 
 	return 0;
+}
+
+sqlite3 *opendb(const char *name)
+{
+	sqlite3 *ret;
+	int rc;
+
+	if (checkdir(name) != 1) {
+		puts("db does not exsist");
+		return NULL;
+	}
+
+	rc = sqlite3_open(name, &ret);
+	if (rc != 0)
+		err(1, "db.c: opendb");
+	else
+		puts("db opened");
+
+	return ret;
+}
+
+int checkdir(const char *name)
+{
+	DIR *dirp;
+	struct dirent *dirent;
+	size_t len;
+
+	len = strlen(name);
+	dirp = opendir("/home/sv/devel/safestore/");
+	if (dirp != NULL) {
+		while ((dirent = readdir(dirp)) != NULL)
+			if (dirent->d_namlen == len &&
+			    strcmp(dirent->d_name, name) == 0) {
+			    	closedir(dirp);
+				return 1;
+			}
+		closedir(dirp);
+	} else
+		err(2, "db.c: checkdir");
 }
