@@ -38,6 +38,24 @@ int newdb(const char *name)
 	return 0;
 }
 
+int insertdb(sqlite3 *db, char *name, char *key)
+{
+	char *sql, *errmsg;
+	int rc;
+
+	asprintf(&sql, "INSERT INTO PW(NAME, KEY) " \
+		       "VALUES (%s, %s);", name, key);
+
+	rc = sqlite3_exec(db, sql, NULL, 0, &errmsg);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "SQL Error db.c : %s", errmsg);
+		sqlite3_free(errmsg);
+	}
+
+	free(sql);
+	return 0;
+}
+
 sqlite3 *opendb(const char *name)
 {
 	sqlite3 *ret;
@@ -55,6 +73,14 @@ sqlite3 *opendb(const char *name)
 		puts("db opened");
 
 	return ret;
+}
+
+int closedb(sqlite3 *db)
+{
+	if (db == NULL)
+		return 1;
+	
+	sqlite3_close(db);
 }
 
 int checkdir(const char *name)

@@ -33,11 +33,16 @@ int main(int argc, char *argv[])
 			args = getargs(line);
 			if (args[1] != NULL)
 				db = opendb(args[1]);
+		} else if(strncmp("close", line, 4) == 0) {
+			if (db != NULL)
+				closedb(db);
+		} else if(strncmp("insert", line, 6) == 0) {
+			insertdb(db, "asdf\0", "asdf\0");
 		}
 
 
 	}
-	
+
 	free(args);
 	free(line);
 	return 0;
