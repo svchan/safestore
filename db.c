@@ -12,9 +12,9 @@ int newdb(const char *name)
 	sqlite3 *db;
 	int rc;
 	size_t len;
-	char *sql = "CREATE TABLE PW(" \ 
-		"NAME        TEXT," \
-         	"KEY         TEXT);";
+	char *sql = "CREATE TABLE PW("  
+		"NAME        TEXT NOT NULL," 
+         	"KEY         TEXT NOT NULL);";
 
 	if (checkdir(name) == 1) {
 		puts("Database already exists");
@@ -43,8 +43,8 @@ int insertdb(sqlite3 *db, char *name, char *key)
 	char *sql, *errmsg;
 	int rc;
 
-	asprintf(&sql, "INSERT INTO PW(NAME, KEY) " \
-		       "VALUES (%s, %s);", name, key);
+	asprintf(&sql, "INSERT INTO PW(NAME,KEY) " 
+		       "VALUES ('%s', '%s');", name, key);
 
 	rc = sqlite3_exec(db, sql, NULL, 0, &errmsg);
 	if (rc != SQLITE_OK) {

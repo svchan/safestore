@@ -15,12 +15,11 @@ int main(int argc, char *argv[])
 	sqlite3 *db;
 	EditLine *el;
 	int c;
-
+	
 	el = el_init("safestore", stdin, stdout, stderr);
 	el_set(el, EL_PROMPT, &prompt);
 
-	while (1) {
-		line = el_gets(el, &c);
+	while ((line = el_gets(el, &c)) != NULL) {
 		line[c - 1] = '\0';
 
 		if (strncmp("exit", line, 4) == 0)
@@ -37,13 +36,16 @@ int main(int argc, char *argv[])
 			if (db != NULL)
 				closedb(db);
 		} else if(strncmp("insert", line, 6) == 0) {
-			insertdb(db, "asdf\0", "asdf\0");
-		}
+			printf("%s %s", args[1], args[2]);
+			if (db == NULL)	
+				puts("No db opened");
+			else
+				insertdb(db, args[1], args[2]);
 
+		}
 
 	}
 
-	free(args);
 	free(line);
 	return 0;
 }
