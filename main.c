@@ -7,6 +7,7 @@
 #include "db.h"
 
 char **getargs(char *);
+int freeargs(char **, int);
 char *prompt(EditLine *);
 
 int main(int argc, char *argv[])
@@ -32,16 +33,18 @@ int main(int argc, char *argv[])
 			args = getargs(line);
 			if (args[1] != NULL)
 				db = opendb(args[1]);
+			free(args[1]);
 		} else if(strncmp("close", line, 4) == 0) {
 			if (db != NULL)
 				closedb(db);
 		} else if(strncmp("insert", line, 6) == 0) {
-			printf("%s %s", args[1], args[2]);
+			args = getargs(line);
 			if (db == NULL)	
 				puts("No db opened");
 			else
 				insertdb(db, args[1], args[2]);
-
+		} else if(strncmp("print", line, 5) == 0) {
+			printdb(db);
 		}
 
 	}
@@ -80,6 +83,10 @@ char **getargs(char *buf)
 	}
 
 	return args;
+}
+
+int freeargs(char **args, int num)
+{
 }
 
 char *prompt(EditLine *el)

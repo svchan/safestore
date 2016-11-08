@@ -56,6 +56,30 @@ int insertdb(sqlite3 *db, char *name, char *key)
 	return 0;
 }
 
+int printdb(sqlite3 *db)
+{
+	char *errmsg = 0, *sql = "SELECT * from PW";
+	int rc;
+
+	rc = sqlite3_exec(db, sql, callback, 0, &errmsg);
+	if (rc != SQLITE_OK) {
+		fprintf(stderr, "SQL Error db.c : %s", errmsg);
+		sqlite3_free(errmsg);
+	}
+
+	return 0;
+}
+
+static int callback(void *data, int argc, char **argv, char **azColName)
+{
+	int i;
+	for (i = 0; i < argc; i++) {
+		printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+	}
+	
+	return 0;
+}
+
 sqlite3 *opendb(const char *name)
 {
 	sqlite3 *ret;
